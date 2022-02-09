@@ -36,14 +36,14 @@
 
 #define DIODE_DIRECTION             COL2ROW
 
-#define MATRIX_COL_PINS             { B6, B5, B4, B3, B2, B1, B0, A11, A10, A9, A8, A7, A6, A5, A4, A3 }
-#define MATRIX_ROW_PINS             { C4, C5, C6, C7, C8, C9 }
+#define MATRIX_COL_PINS             { A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15 }
+#define MATRIX_ROW_PINS             { C3, C4, C5, C6, C7, C8 }
 
 /* LED matrix */
 #define LED_MATRIX_ROWS             MATRIX_ROWS
 #define LED_MATRIX_ROW_CHANNELS     1
 #define LED_MATRIX_ROWS_HW          (LED_MATRIX_ROWS * LED_MATRIX_ROW_CHANNELS)
-#define LED_MATRIX_ROW_PINS         { A0, A1, A2, B11, C10, C11 }
+#define LED_MATRIX_ROW_PINS         { B0, B1, B2, D4, C9, C10 }
 
 #define LED_MATRIX_COLS             MATRIX_COLS
 #define LED_MATRIX_COL_PINS         MATRIX_COL_PINS
@@ -55,14 +55,13 @@
 #define RGB_DISABLE_WHEN_USB_SUSPENDED  true
 
 /* Connects each switch in the dip switch to the GPIO pin of the MCU */
-//#define DIP_SWITCH_PINS             { D7 }
-#define DIP_SWITCH_PINS             { D7, C2 } // Not sure
+#define DIP_SWITCH_PINS             { D7 }
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
 #define DEBOUNCE                    5
 
 /* LED Status indicators */
-#define LED_CAPS_LOCK_PIN           B8
+#define LED_CAPS_LOCK_PIN           D1
 #define LED_PIN_ON_STATE            1
 
 #define LED_MAC_PIN                 B4
