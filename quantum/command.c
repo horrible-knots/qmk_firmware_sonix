@@ -524,7 +524,6 @@ static bool command_common(uint8_t code) {
             switch_default_layer(0);
             break;
 #endif
-
         default:
             print("?");
             return false;

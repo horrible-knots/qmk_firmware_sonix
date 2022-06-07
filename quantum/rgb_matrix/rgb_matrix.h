@@ -90,7 +90,6 @@
 
 enum rgb_matrix_effects {
     RGB_MATRIX_NONE = 0,
-
 // --------------------------------------
 // -----Begin rgb effect enum macros-----
 #define RGB_MATRIX_EFFECT(name, ...) RGB_MATRIX_##name,

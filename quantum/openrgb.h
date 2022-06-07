@@ -53,3 +53,8 @@ void openrgb_get_enabled_modes(void);
 void openrgb_set_mode(uint8_t *data);
 void openrgb_direct_mode_set_single_led(uint8_t *data);
 void openrgb_direct_mode_set_leds(uint8_t *data);
+
+void eeconfig_init_openrgb_direct(void);
+bool eeconfig_openrgb_direct_eeprom_valid(void);
+void eeconfig_openrgb_direct_operation_start(void);
+void eeconfig_openrgb_direct_operation_finished(void);

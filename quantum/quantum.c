@@ -373,7 +373,6 @@ layer_state_t update_tri_layer_state(layer_state_t state, uint8_t layer1, uint8_
 void update_tri_layer(uint8_t layer1, uint8_t layer2, uint8_t layer3) { layer_state_set(update_tri_layer_state(layer_state, layer1, layer2, layer3)); }
 
 void matrix_init_quantum() {
-    magic();
     led_init_ports();
 #ifdef BACKLIGHT_ENABLE
     backlight_init_ports();
@@ -387,6 +386,7 @@ void matrix_init_quantum() {
 #ifdef RGB_MATRIX_ENABLE
     rgb_matrix_init();
 #endif
+    magic();
 #if defined(UNICODE_ENABLE) || defined(UNICODEMAP_ENABLE) || defined(UCIS_ENABLE)
     unicode_input_mode_init();
 #endif

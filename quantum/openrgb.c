@@ -18,12 +18,15 @@
 #    error "RAW_ENABLE is not enabled"
 #endif
 
+#include <stdlib.h>
 #include "version.h"
 #include "quantum.h"
 #include "openrgb.h"
 #include "raw_hid.h"
 #include "string.h"
 #include <color.h>
+#include "eeconfig.h"
+#include "eeprom.h"
 
 #if !defined(OPENRGB_DIRECT_MODE_STARTUP_RED)
 #    define OPENRGB_DIRECT_MODE_STARTUP_RED 0
@@ -196,15 +199,16 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
         case OPENRGB_GET_ENABLED_MODES:
             openrgb_get_enabled_modes();
             break;
-
         case OPENRGB_SET_MODE:
             openrgb_set_mode(data);
             break;
         case OPENRGB_DIRECT_MODE_SET_SINGLE_LED:
             openrgb_direct_mode_set_single_led(data);
+            rgb_matrix_mode(RGB_MATRIX_OPENRGB_DIRECT);
             break;
         case OPENRGB_DIRECT_MODE_SET_LEDS:
             openrgb_direct_mode_set_leds(data);
+            rgb_matrix_mode(RGB_MATRIX_OPENRGB_DIRECT);
             break;
     }
 
@@ -391,4 +395,44 @@ void openrgb_direct_mode_set_leds(uint8_t *data) {
         g_openrgb_direct_mode_colors[color_idx].b = data[data_idx + 5];
 #endif
     }
+}
+
+// OpenRGB Direct Conf
+enum orgbd {
+    ORGBD_CONFIGURED = 0,
+    ORGBD_IN_PROGRESS,
+    ORGBD_RESERVED,
+    ORGBD_MAGIC,
+};
+
+// Disable eeprom functionality of OpenRGB
+void eeconfig_init_openrgb_direct(void) {
+    char data_array[EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE];
+    void *config_ptr = (void*)EECONFIG_OPENRGB_DIRECT_CONFIG;
+    void *data_ptr = (void*)EECONFIG_OPENRGB_DIRECT_ARRAY;
+
+    eeconfig_openrgb_direct_operation_start();
+
+    eeprom_update_byte((void*)config_ptr+ORGBD_CONFIGURED, 0);    // Configured state flag.
+    eeprom_update_byte((void*)config_ptr+ORGBD_MAGIC, 0x55); // A magic byte.
+
+    memset(&data_array, 0, sizeof(data_array));
+    eeprom_write_block(&data_array, data_ptr, sizeof(data_array));
+
+    eeconfig_openrgb_direct_operation_finished();
+}
+
+bool eeconfig_openrgb_direct_eeprom_valid() {
+    uint8_t operation_in_progress, magic_byte;
+    operation_in_progress = eeprom_read_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG + ORGBD_IN_PROGRESS);
+    magic_byte = eeprom_read_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_MAGIC);
+    return (!operation_in_progress && magic_byte == 0x55);
+}
+
+void eeconfig_openrgb_direct_operation_start() {
+    eeprom_update_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_IN_PROGRESS, 1);
+}
+
+void eeconfig_openrgb_direct_operation_finished() {
+    eeprom_update_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_IN_PROGRESS, 0);
 }

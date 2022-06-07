@@ -18,6 +18,10 @@ void via_eeprom_set_valid(bool valid);
 void eeconfig_init_via(void);
 #endif
 
+#if defined(OPENRGB_ENABLE)
+void eeconfig_init_openrgb_direct(void);
+#endif
+
 /** \brief eeconfig enable
  *
  * FIXME: needs doc
@@ -77,12 +81,14 @@ void eeconfig_init_quantum(void) {
 #endif
 #if defined(VIA_ENABLE)
     // Invalidate VIA eeprom config, and then reset.
-    // Just in case if power is lost mid init, this makes sure that it pets
+    // Just in case if power is lost mid init, this makes sure that it gets
     // properly re-initialized.
     via_eeprom_set_valid(false);
     eeconfig_init_via();
 #endif
-
+#if defined(OPENRGB_ENABLE)
+    eeconfig_init_openrgb_direct();
+#endif
     eeconfig_init_kb();
 }
 

@@ -53,8 +53,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // TODO: Combine these into a single word and single block of EEPROM
 #define EECONFIG_KEYMAP_UPPER_BYTE (uint8_t *)34
+// Assume there are up to 128 keys, 3 bytes used per key for 384 bytes, plus 4 for configuration. 
+#define EECONFIG_OPENRGB_DIRECT_CONFIG (uint8_t *)35
+#define EECONFIG_OPENRGB_DIRECT_ARRAY (uint8_t *)39
+#define EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE 384
 // Size of EEPROM being used, other code can refer to this for available EEPROM
-#define EECONFIG_SIZE 35
+#define EECONFIG_SIZE 423
 /* debug bit */
 #define EECONFIG_DEBUG_ENABLE (1 << 0)
 #define EECONFIG_DEBUG_MATRIX (1 << 1)
