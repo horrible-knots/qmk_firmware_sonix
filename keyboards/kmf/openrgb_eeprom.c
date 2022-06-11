@@ -8,11 +8,18 @@
 #include "openrgb.h"
 #include "rgb_matrix.h"
 
+#ifdef OPENRGB_ENABLE
 uint8_t openrgb_buf[EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE];
 
-void openrgb_load_rgb_state_eeprom(void) {
+void openrgb_load_rgb_state_eeprom(int force) {
+    if (force == false)
+        if ((uint32_t)rgb_matrix_get_mode != (uint32_t)RGB_MATRIX_OPENRGB_DIRECT)
+            return;
+
     memset(&openrgb_buf, 0x00, EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE);
-    eeprom_read_block(&openrgb_buf, (void *)EECONFIG_OPENRGB_DIRECT_ARRAY, EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE);
+    eeprom_read_block(&openrgb_buf, (void*)EECONFIG_OPENRGB_DIRECT_ARRAY, EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE);
+
+    rgb_matrix_mode(RGB_MATRIX_OPENRGB_DIRECT);
 
     int openrgb_index = 0;
     for (int i = 0; i < LED_MATRIX_ROWS; i++) {
@@ -25,7 +32,7 @@ void openrgb_load_rgb_state_eeprom(void) {
 		openrgb_index += 3;
 	    }
 	}
-    }	
+    }
 }
 
 void openrgb_save_rgb_state_eeprom(void) {
@@ -46,3 +53,4 @@ void openrgb_save_rgb_state_eeprom(void) {
 
     eeprom_write_block(&openrgb_buf, (void*)EECONFIG_OPENRGB_DIRECT_ARRAY, EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE);
 }
+#endif

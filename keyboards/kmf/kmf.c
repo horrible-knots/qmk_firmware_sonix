@@ -52,6 +52,8 @@ void keyboard_post_init_user(void) {
     uint32_t eedata = eeconfig_read_user();
     gamer_mode_led_state = ((eedata >> GAMER_MODE_LED_BIT) & 1);
     writePin(LED_GAMER_MODE_PIN, gamer_mode_led_state);    
-    openrgb_load_rgb_state_eeprom();
+#ifdef OPENRGB_ENABLED
+    openrgb_load_rgb_state_eeprom(false);
+#endif
 }
 

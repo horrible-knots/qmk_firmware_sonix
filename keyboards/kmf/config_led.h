@@ -33,5 +33,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 255
 #define RGB_MATRIX_LED_FLUSH_LIMIT 32 // Limit the cost of RGB effects at the expense of fluidity.  This should be around 30 fps.
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR
 #define RGB_MATRIX_STARTUP_VAL RGB_MATRIX_MAXIMUM_BRIGHTNESS

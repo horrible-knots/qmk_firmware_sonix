@@ -408,13 +408,13 @@ enum orgbd {
 // Disable eeprom functionality of OpenRGB
 void eeconfig_init_openrgb_direct(void) {
     char data_array[EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE];
-    void *config_ptr = (void*)EECONFIG_OPENRGB_DIRECT_CONFIG;
-    void *data_ptr = (void*)EECONFIG_OPENRGB_DIRECT_ARRAY;
+    void *config_ptr  = EECONFIG_OPENRGB_DIRECT_CONFIG;
+    void *data_ptr = EECONFIG_OPENRGB_DIRECT_ARRAY;
 
     eeconfig_openrgb_direct_operation_start();
 
-    eeprom_update_byte((void*)config_ptr+ORGBD_CONFIGURED, 0);    // Configured state flag.
-    eeprom_update_byte((void*)config_ptr+ORGBD_MAGIC, 0x55); // A magic byte.
+    eeprom_update_byte(config_ptr+ORGBD_CONFIGURED, 0);    // Configured state flag.
+    eeprom_update_byte(config_ptr+ORGBD_MAGIC, 0x55); // A magic byte.
 
     memset(&data_array, 0, sizeof(data_array));
     eeprom_write_block(&data_array, data_ptr, sizeof(data_array));
@@ -424,15 +424,15 @@ void eeconfig_init_openrgb_direct(void) {
 
 bool eeconfig_openrgb_direct_eeprom_valid() {
     uint8_t operation_in_progress, magic_byte;
-    operation_in_progress = eeprom_read_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG + ORGBD_IN_PROGRESS);
-    magic_byte = eeprom_read_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_MAGIC);
+    operation_in_progress = eeprom_read_byte(EECONFIG_OPENRGB_DIRECT_CONFIG + ORGBD_IN_PROGRESS);
+    magic_byte = eeprom_read_byte(EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_MAGIC);
     return (!operation_in_progress && magic_byte == 0x55);
 }
 
 void eeconfig_openrgb_direct_operation_start() {
-    eeprom_update_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_IN_PROGRESS, 1);
+    eeprom_update_byte(EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_IN_PROGRESS, 1);
 }
 
 void eeconfig_openrgb_direct_operation_finished() {
-    eeprom_update_byte((void*)EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_IN_PROGRESS, 0);
+    eeprom_update_byte(EECONFIG_OPENRGB_DIRECT_CONFIG+ORGBD_IN_PROGRESS, 0);
 }

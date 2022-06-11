@@ -1,9 +1,16 @@
 {
     "keyboard_name": "ONN Mechanical Gaming Keyboard",
     "url": "",
+    "name": "ONN Mechanical Gaming Keyboard",
+    "vid": "1205",
+    "pid": "3938",
     "maintainer": "qmk",
+    "matrix": {
+	    "rows": 6,
+	    "columns": 21
+    },
     "layouts": {
-        "LAYOUT_fullsize_ansi": {
+        "LAYOUT_default": {
             "layout": [
                 {"x":0, "y":0},
                 {"x":2, "y":0},
