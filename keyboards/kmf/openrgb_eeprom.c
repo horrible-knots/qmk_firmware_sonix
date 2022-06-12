@@ -1,3 +1,4 @@
+#ifdef OPENRGB_ENABLE
 #include <stdlib.h>
 #include <string.h>
 #include "openrgb_eeprom.h"
@@ -8,7 +9,6 @@
 #include "openrgb.h"
 #include "rgb_matrix.h"
 
-#ifdef OPENRGB_ENABLE
 uint8_t openrgb_buf[EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE];
 
 void openrgb_load_rgb_state_eeprom(int force) {
