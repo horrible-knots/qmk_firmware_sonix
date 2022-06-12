@@ -1,5 +1,5 @@
 # project specific files
-SRC += ../../../drivers/led/sn32/matrix_sn32f24xx.c
+SRC = ../../../drivers/led/sn32/matrix_sn32f24xx.c
 SRC += config_led.c
 SRC += bootmagic_lite.c
 SRC += command_extra.c

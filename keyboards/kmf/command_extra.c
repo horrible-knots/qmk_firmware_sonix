@@ -7,7 +7,7 @@
 #include "command.h"
 
 bool command_extra(uint8_t code) {
-#if defined OPENRGB_ENABLE
+#if OPENRGB_ENABLE
     switch (code) {
         case MAGIC_KC(OPENRGB_EEPROM_SAVE):
             openrgb_save_rgb_state_eeprom();
@@ -19,5 +19,5 @@ bool command_extra(uint8_t code) {
 	    return false;
     }
 #endif
-    return true;
+    return false;
 }
