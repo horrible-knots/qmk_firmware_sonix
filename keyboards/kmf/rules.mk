@@ -33,7 +33,7 @@ BOOTMAGIC_LITE_ROW    = 0
 # Print out uS per matrix scan when CONSOLE_ENABLE = yes on the HID listener.
 DEBUG_MATRIX_SCAN_RATE = no
 # OpenRGB
-OPENRGB_ENABLE = no
+OPENRGB_ENABLE = yes
 OPENRGB_DIRECT_MODE_UNBUFFERED = no
 
 # Custom RGB matrix handling

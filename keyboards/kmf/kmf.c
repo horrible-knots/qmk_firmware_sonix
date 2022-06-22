@@ -53,7 +53,7 @@ void keyboard_post_init_user(void) {
     gamer_mode_led_state = ((eedata >> GAMER_MODE_LED_BIT) & 1);
     writePin(LED_GAMER_MODE_PIN, gamer_mode_led_state);    
 #ifdef OPENRGB_ENABLE
-    openrgb_load_rgb_state_eeprom(false);
+    openrgb_load_rgb_state_eeprom(true);
 #endif
 }
 
