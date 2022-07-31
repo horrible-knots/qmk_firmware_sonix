@@ -35,6 +35,8 @@ DEBUG_MATRIX_SCAN_RATE = no
 # OpenRGB
 OPENRGB_ENABLE = yes
 OPENRGB_DIRECT_MODE_UNBUFFERED = no
+# Custom effects
+RGB_MATRIX_CUSTOM_KB = yes
 
 # Custom RGB matrix handling
 CUSTOM_MATRIX = yes
