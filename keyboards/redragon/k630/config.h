@@ -43,5 +43,5 @@
 //#define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
 //#define LOCKING_RESYNC_ENABLE
-
+#define DISABLE_RGB_MATRIX_CYCLE_LEFT_RIGHT
 #include "config_led.h"

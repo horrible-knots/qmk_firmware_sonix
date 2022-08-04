@@ -18,7 +18,7 @@
 #pragma once
 
 // Define dynamic keymap layer count
-#define DYNAMIC_KEYMAP_EEPROM_MAX_ADDR 1200
+#define DYNAMIC_KEYMAP_EEPROM_MAX_ADDR 1536
 
 // Enable RGB Matrix
 #define VIA_QMK_RGBLIGHT_ENABLE
