@@ -21,7 +21,7 @@ NKRO_ENABLE = yes       # USB Nkey Rollover
 AUDIO_ENABLE = no
 WAIT_FOR_USB = no
 KEYBOARD_SHARED_EP = yes
-DEBOUNCE_TYPE = sym_eager_pk
+#DEBOUNCE_TYPE = sym_eager_pk
 # Debug
 MAGIC_KEYCODE_ENABLE = yes # See quantum/command.c and quantum/command.h for available commands
 CONSOLE_ENABLE = no        # Console for debug.
@@ -35,6 +35,8 @@ DEBUG_MATRIX_SCAN_RATE = no
 # OpenRGB
 OPENRGB_ENABLE = yes
 OPENRGB_DIRECT_MODE_UNBUFFERED = no
+# Custom effects
+RGB_MATRIX_CUSTOM_KB = yes
 
 # Custom RGB matrix handling
 CUSTOM_MATRIX = yes
