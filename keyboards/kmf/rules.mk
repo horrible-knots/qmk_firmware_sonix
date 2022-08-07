@@ -24,7 +24,7 @@ KEYBOARD_SHARED_EP = yes
 #DEBOUNCE_TYPE = sym_eager_pk
 # Debug
 MAGIC_KEYCODE_ENABLE = yes # See quantum/command.c and quantum/command.h for available commands
-CONSOLE_ENABLE = no        # Console for debug.
+CONSOLE_ENABLE = yes       # Console for debug.
 COMMAND_ENABLE = yes       # Commands for debug and configuration.
 BOOTMAGIC_ENABLE = yes     # Hold down escape while powering up to jump to bootloader.  Seems broken currently.
 # Choose which key to start up in bootloader by matrix grid.
@@ -33,7 +33,7 @@ BOOTMAGIC_LITE_ROW    = 0
 # Print out uS per matrix scan when CONSOLE_ENABLE = yes on the HID listener.
 DEBUG_MATRIX_SCAN_RATE = no
 # OpenRGB
-OPENRGB_ENABLE = yes
+OPENRGB_ENABLE = no
 OPENRGB_DIRECT_MODE_UNBUFFERED = no
 # Custom effects
 RGB_MATRIX_CUSTOM_KB = yes
@@ -42,3 +42,6 @@ RGB_MATRIX_CUSTOM_KB = yes
 CUSTOM_MATRIX = yes
 RGB_MATRIX_ENABLE = yes
 RGB_MATRIX_DRIVER = SN32F24xB
+
+# Debugging ram usage
+TOP_SYMBOLS = yes

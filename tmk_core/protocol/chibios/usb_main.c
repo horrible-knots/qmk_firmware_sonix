@@ -655,7 +655,7 @@ static bool usb_request_hook_cb(USBDriver *usbp) {
                         break;
 
                     case HID_SET_IDLE:
-                        //keyboard_idle = usbp->setup[3]; /* MSB(wValue) */
+                        keyboard_idle = usbp->setup[3]; /* MSB(wValue) */
                                                         /* arm the timer */
 #ifdef NKRO_ENABLE
                         if (!keymap_config.nkro && keyboard_idle) {
@@ -738,7 +738,7 @@ void init_usb_driver(USBDriver *usbp) {
      * after a reset.
      */
     usbDisconnectBus(usbp);
-    wait_ms(1500);
+    wait_ms(50);
     usbStart(usbp, &usbcfg);
     usbConnectBus(usbp);
 
@@ -779,7 +779,9 @@ void kbd_in_cb(USBDriver *usbp, usbep_t ep) {
 /* start-of-frame handler
  * TODO: i guess it would be better to re-implement using timers,
  *  so that this is not going to have to be checked every 1ms */
-void kbd_sof_cb(USBDriver *usbp) { (void)usbp; }
+void kbd_sof_cb(USBDriver *usbp) { 
+	(void)usbp; 
+}
 
 /* Idle requests timer code
  * callback (called from ISR, unlocked state) */
@@ -819,7 +821,9 @@ static void keyboard_idle_timer_cb(void *arg) {
 }
 
 /* LED status */
-uint8_t keyboard_leds(void) { return keyboard_led_state; }
+uint8_t keyboard_leds(void) { 
+	return keyboard_led_state; 
+}
 
 /* prepare and start sending a report IN
  * not callable from ISR or locked state */
@@ -919,7 +923,9 @@ void send_mouse(report_mouse_t *report) {
 }
 
 #else  /* MOUSE_ENABLE */
-void send_mouse(report_mouse_t *report) { (void)report; }
+void send_mouse(report_mouse_t *report) { 
+	(void)report; 
+}
 #endif /* MOUSE_ENABLE */
 
 /* ---------------------------------------------------------
@@ -1043,11 +1049,13 @@ void console_task(void) {
     uint8_t buffer[CONSOLE_EPSIZE];
     size_t  size = 0;
     do {
-        size_t size = chnReadTimeout(&drivers.console_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
+        size = chnReadTimeout(&drivers.console_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
         if (size > 0) {
             console_receive(buffer, size);
         }
     } while (size > 0);
+    memset(&buffer, 0, CONSOLE_EPSIZE);
+
 }
 
 #endif /* CONSOLE_ENABLE */
@@ -1071,7 +1079,7 @@ void raw_hid_task(void) {
     uint8_t buffer[RAW_EPSIZE];
     size_t  size = 0;
     do {
-        size_t size = chnReadTimeout(&drivers.raw_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
+        size = chnReadTimeout(&drivers.raw_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
         if (size > 0) {
             raw_hid_receive(buffer, size);
         }
@@ -1082,7 +1090,9 @@ void raw_hid_task(void) {
 
 #ifdef MIDI_ENABLE
 
-void send_midi_packet(MIDI_EventPacket_t *event) { chnWrite(&drivers.midi_driver.driver, (uint8_t *)event, sizeof(MIDI_EventPacket_t)); }
+void send_midi_packet(MIDI_EventPacket_t *event) { 
+	chnWrite(&drivers.midi_driver.driver, (uint8_t *)event, sizeof(MIDI_EventPacket_t)); 
+}
 
 bool recv_midi_packet(MIDI_EventPacket_t *const event) {
     size_t size = chnReadTimeout(&drivers.midi_driver.driver, (uint8_t *)event, sizeof(MIDI_EventPacket_t), TIME_IMMEDIATE);
@@ -1092,7 +1102,7 @@ void midi_ep_task(void) {
     uint8_t buffer[MIDI_STREAM_EPSIZE];
     size_t  size = 0;
     do {
-        size_t size = chnReadTimeout(&drivers.midi_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
+        size = chnReadTimeout(&drivers.midi_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
         if (size > 0) {
             MIDI_EventPacket_t event;
             recv_midi_packet(&event);
@@ -1105,7 +1115,9 @@ void midi_ep_task(void) {
 
 void virtser_init(void) {}
 
-void virtser_send(const uint8_t byte) { chnWrite(&drivers.serial_driver.driver, &byte, 1); }
+void virtser_send(const uint8_t byte) { 
+	chnWrite(&drivers.serial_driver.driver, &byte, 1); 
+}
 
 __attribute__((weak)) void virtser_recv(uint8_t c) {
     // Ignore by default

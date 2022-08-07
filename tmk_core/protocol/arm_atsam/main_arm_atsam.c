@@ -190,6 +190,7 @@ void main_subtask_console_flush(void) {
         pconbuf += send_out;  // Increment buffer point by bytes sent
     }
 
+    memset(&console_printbuf, 0, CONSOLE_PRINTBUF_SIZE);
     console_printbuf_len = 0;
 }
 

@@ -9,6 +9,8 @@ enum layer_names {
 enum my_keycodes {
     GAMER_MODE = SAFE_RANGE,
     REC_ARM,
+    REC_REC,
+    REC_PLY,
     REC_STOP,
     REC_ADV,
     REC_RET,
