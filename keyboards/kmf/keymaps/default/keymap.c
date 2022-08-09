@@ -41,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    _______,    GAMER_MODE, _______,                                  _______,                                     _______,    _______,    _______,    _______,    RGB_HUD,    RGB_VAD,    RGB_HUI,                _______,    _______ 
 	      ),
     [_REC]   = LAYOUT_default(
-	    	   XXX,                    XXX,        XXX,     XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,      
+	    	   KC_ESC,                 XXX,        XXX,     XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,      
                    XXX,        XXX,        XXX,        XXX,     XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,  
                    XXX,        TG(_REC),   XXX,        XXX,     REC_CLR,    XXX,     XXX,     XXX,        REC_REC,    REC_PLY,    XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,  
                    XXX,        REC_ARM,    REC_STOP,   XXX,     XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,                    XXX,                                            XXX,        XXX,        XXX,

@@ -74,11 +74,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
            keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
 #endif
 
-    if (rec_state.armed || rec_active()) {
+    // When recording/playing, only these keys will be active
+    if (rec_state.ready && (rec_state.armed || rec_active())) {
         switch (keycode) {
             case KC_Z:
             case KC_X:
-	        if (rec_state.armed) {
+	       	if (rec_active()) {
+		    switch (keycode) {
+                        case KC_Z:
+		            rec_state.last_key = record->event.pressed ? KC_Z : 254;
+			    return true; // these have to get processed
+			case KC_X:
+			    rec_state.last_key = record->event.pressed ? KC_X : 254;
+			    return true;
+                    }
+		} else if (rec_state.armed) {
 		    switch (rec_state.arm_mode) {
 			case ARM_MODE_PLY:
 			    rec_state.play_start = true;
@@ -92,15 +102,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			    // Not possible
 			    break;
 		    }
-		} else if (rec_state.recording) {
-		    switch (keycode) {
-                        case KC_Z:
-		            rec_state.last_key = record->event.pressed ? KC_Z : 254;
-			    return true; // these have to get processed
-			case KC_X:
-			    rec_state.last_key = record->event.pressed ? KC_X : 254;
-			    return true;
-                    }
+		    return false;
 		}
 	    case TG(_REC):
 		return true;
@@ -174,15 +176,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		rec_state.offset_ms -= 5;
 	    }
 	    return false;
-	case TG(_REC):
-	    return true;
     }
 
-    if (get_highest_layer(layer_state) == _REC) {
-        return false;
-    } else {
-        return true;
-    }
+    return true;
 }
 
 void rec_reset(void) {
@@ -194,6 +190,7 @@ void rec_reset(void) {
     rec_state.recording = false;
     rec_state.led_needs_update = true;
     rec_state.arm_mode = ARM_MODE_NOSEL;
+    rec_state.last_key = 0;
     rec_dermafrazit_last_n = 0;
     clear_keyboard();
 }
@@ -202,15 +199,17 @@ static uint8_t rec_rgb_matrix_last_mode;
 layer_state_t layer_state_set_kb(layer_state_t state) {
     switch (get_highest_layer(state)) {
         case _BASE:
+	    rec_state.ready = false;
+
 	    rec_blank_keyboard();
 	    rgb_matrix_enable();
+	    rgb_matrix_mode_noeeprom(rec_rgb_matrix_last_mode);
             break;
         case _REC:
 	    rec_rgb_matrix_last_mode = rgb_matrix_get_mode();
 	    rgb_matrix_disable();
 
 	    rec_reset();
-	    rec_state.led_needs_update = true;
             break;
     }
     return (state);
@@ -226,8 +225,16 @@ bool rec_active() {
 static uint8_t rec_blink_led_iterations_remaining;
 static enum ARM_MODE last_arm_mode = ARM_MODE_NOSEL;
 void rec_state_leds() {
-    if (!rec_state.ready)
+    if (rec_state.ready) {
+        rec_state_standby_led_rgb(KC_ESC, 0, 255, 0);
+    } else {
+        rec_state_standby_led_rgb(KC_ESC, 255, 0, 0);
         return;
+    }
+
+    if (rec_state.led_needs_update) {
+	rec_blank_keyboard();
+    }
 
     if (rec_state.warn_blink) {
 	if (rec_blink_led_iterations_remaining == 0) {
@@ -244,19 +251,6 @@ void rec_state_leds() {
 	return;
     }
 
-    switch (rec_state.arm_mode) {
-	case ARM_MODE_REC:
-            rec_state_blink_led(REC_REC);
-	    break;
-	case ARM_MODE_PLY:
-	    rec_state_blink_led(REC_PLY);
-	    break;
-	case ARM_MODE_NOSEL:
-	    rec_state_standby_led_rgb(REC_REC, 255, 0, 0);
-	    rec_state_standby_led_rgb(REC_PLY, 0, 255, 0);
-	    break;
-    }
-
     if (rec_state.ready && rec_state.led_needs_update) {
         rec_blank_keyboard();
         rec_state_standby_led(REC_ADV);
@@ -270,10 +264,27 @@ void rec_state_leds() {
     }
 
     if (rec_state.armed && rec_state.led_needs_update) {
-        rec_state_standby_led(KC_Z);
-        rec_state_standby_led(KC_X);
-    } else if (rec_state.armed && !rec_state.led_needs_update && !rec_active()) {
+        rec_state_standby_led_rgb(KC_Z, 0, 0, 255);
+        rec_state_standby_led_rgb(KC_X, 0, 0, 255);
+    } else if (rec_state.armed) {
         rec_state_blink_led(REC_ARM);
+    }
+
+    if (rec_active()) {
+	rec_state_standby_led_rgb(REC_ARM, 128, 128, 128);
+    }
+
+    switch (rec_state.arm_mode) {
+	case ARM_MODE_REC:
+            rec_state_blink_led(REC_REC);
+	    break;
+	case ARM_MODE_PLY:
+	    rec_state_blink_led(REC_PLY);
+	    break;
+	case ARM_MODE_NOSEL:
+	    rec_state_standby_led_rgb(REC_REC, 255, 0, 0);
+	    rec_state_standby_led_rgb(REC_PLY, 0, 255, 0);
+	    break;
     }
 
     rec_state.led_needs_update = false;
@@ -303,7 +314,7 @@ void rec_state_blink_led(uint16_t keycode) {
 uint8_t rec_state_led_blink_state;
 uint16_t rec_state_led_timer;
 void rec_state_blink_led_rgb(uint16_t keycode, int r, int g, int b) {
-    if (timer_elapsed(rec_state_led_timer) > 300) {
+    if (timer_elapsed(rec_state_led_timer) > 250) {
         switch (rec_state_led_blink_state) {
             case 0:
                 rgb_matrix_set_color(keycode_to_index(keycode), 0, 0, 0);
@@ -355,10 +366,14 @@ void matrix_scan_user() {
     if (rec_state.warn_blink)
 	return;
 
-    if (rec_state.arm_mode == ARM_MODE_PLY) {
-        rec_play();
-    } else if (rec_state.arm_mode == ARM_MODE_REC) {
-        rec_record();
+    if (rec_state.last_key > 0) {
+	if (rec_active() || rec_state.rec_start || rec_state.play_start) {
+	    if (rec_state.arm_mode == ARM_MODE_PLY) {
+		rec_play();
+	    } else if (rec_state.arm_mode == ARM_MODE_REC) {
+		rec_record();
+	    }
+	}
     }
 }
 
@@ -373,6 +388,8 @@ void rec_record() {
         rec_state.rec_start = false;
         rec_state.recording = true;
     } else if (rec_state.recording) {
+	rec_dermafrazit(notes_max/rec_record_current_note, false);
+
         if (rec_state.last_key < 254) /* key pressed */ {
 	    // We can't store this.  Maybe I can reduce the accuracy and double the time
 	    if (timer_elapsed(rec_record_timer) > 255) {
@@ -394,7 +411,6 @@ void rec_record() {
 		rec_record_timer = timer_read();
 		rec_record_current_note++;
 		rec_state.last_key = 255;
-		rec_dermafrazit(notes_max/rec_record_current_note, false);
 	    }
 
 	    if (rec_record_current_note >= notes_max) {
@@ -420,6 +436,8 @@ void rec_play() {
         rec_play_current_note = 0;
 	rec_play_state = PLAY_START;
     } else if (rec_state.playing == true) {
+	rec_dermafrazit(notes_max/rec_play_current_note, false);
+
         if (rec_play_current_note >= rec_record_current_note) {
 	    rec_set_warn_color((RGB){ 255, 255, 255 });
 	    rec_state.warn_blink = true;
