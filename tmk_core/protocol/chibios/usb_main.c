@@ -1035,6 +1035,7 @@ int8_t sendchar(uint8_t c) {
     const sysinterval_t timeout = timed_out ? TIME_IMMEDIATE : TIME_MS2I(5);
     const size_t        result  = chnWriteTimeout(&drivers.console_driver.driver, &c, 1, timeout);
     timed_out                   = (result == 0);
+    memset(&drivers.console_driver.driver.config->ob[0], 0, 64);
     return result;
 }
 

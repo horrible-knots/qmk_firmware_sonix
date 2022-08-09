@@ -30,9 +30,10 @@ typedef struct {
     bool rec_start;
     bool led_needs_update;
     bool warn_blink;
+    RGB warn_color_rgb;
     enum ARM_MODE arm_mode;
     uint8_t offset_ms;
-    uint8_t last_char;
+    uint8_t last_key;
 } rec_state_t;
 
 typedef struct {
@@ -41,9 +42,11 @@ typedef struct {
     uint8_t length_ms;
 } note_t;
 
+uint8_t debug_light;
 rec_state_t rec_state;
-note_t *notes;
-uint16_t notes_max;
+note_t notes[700];
+uint8_t rec_dermafrazit_last_n;
+uint16_t notes_max = sizeof(notes) / sizeof(note_t);
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record);
 void keyboard_post_init_user(void);
@@ -60,7 +63,10 @@ void rec_state_standby_led(uint16_t keycode);
 uint8_t keycode_to_index(uint16_t keycode);
 bool rec_active(void);
 void rec_state_standby_led_rgb(uint16_t keycode, uint8_t r, uint8_t g, uint8_t b);
-uint16_t rec_allocate_notes(note_t *notes);
+void rec_reset(void);
+void rec_dermafrazit(float ratio, bool mode);
+void rec_set_warn_color(RGB rgb);
+void rec_blank_keyboard(void);
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CONSOLE_ENABLE
@@ -68,39 +74,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
            keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
 #endif
 
-    if (rec_state.armed) {
+    if (rec_state.armed || rec_active()) {
         switch (keycode) {
             case KC_Z:
             case KC_X:
-	        if (!rec_active()) {
+	        if (rec_state.armed) {
 		    switch (rec_state.arm_mode) {
 			case ARM_MODE_PLY:
 			    rec_state.play_start = true;
+			    rec_state.armed = false;
 			    break;
 			case ARM_MODE_REC:
 			    rec_state.rec_start = true;
+			    rec_state.armed = false;
 			    break;
 			case ARM_MODE_NOSEL:
 			    // Not possible
 			    break;
 		    }
-		    return true;
-		} else if (rec_active() && rec_state.arm_mode == ARM_MODE_REC) {
+		} else if (rec_state.recording) {
 		    switch (keycode) {
                         case KC_Z:
-			    rec_state.last_char = 'z';
-			    break;
+		            rec_state.last_key = record->event.pressed ? KC_Z : 254;
+			    return true; // these have to get processed
 			case KC_X:
-			    rec_state.last_char = 'x';
-			    break;
+			    rec_state.last_key = record->event.pressed ? KC_X : 254;
+			    return true;
                     }
 		}
-	    case TO(_REC):
+	    case TG(_REC):
 		return true;
 	    case REC_STOP:
+		// catch and release to the next switch statement
 		break;
-            default:
-                return false;
         }
     }
 
@@ -113,50 +119,51 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 gamer_mode_state_to_eeprom(gamer_mode_led_state);
                 return false;
             }
+	    break;
 	case KC_LWIN:
 	    return !(gamer_mode_led_state == LED_PIN_ON_STATE);
 	case KC_APP:
 	    return !(gamer_mode_led_state == LED_PIN_ON_STATE);
 	case REC_ARM:
 	    if (record->event.pressed) {
-		if (rec_state.arm_mode != ARM_MODE_NOSEL) {
+		if (rec_state.arm_mode == ARM_MODE_NOSEL) {
+                    rec_set_warn_color((RGB){ 255, 0, 0 });
+		    rec_state.warn_blink = 1;
+		    return false;
+		} else {
     		    rec_state.armed = true;
 		    rec_state.led_needs_update = true;
-		    break;
-		} else {
-		    rec_state.warn_blink = 1;
-		    break;
-		}
+		} 
 	    }
+	    break;
 	case REC_REC:
 	    if (record->event.pressed) {
 		rec_state.arm_mode = ARM_MODE_REC;
 		rec_state.armed = false;
 		rec_state.led_needs_update = true;
-		break;
+		return false;
 	    }
+	    break;
 	case REC_PLY:
 	    if (record->event.pressed) {
 		rec_state.arm_mode = ARM_MODE_PLY;
 		rec_state.armed = false;
 		rec_state.led_needs_update = true;
-		break;
+		return false;
 	    }
+	    break;
 	case REC_CLR:
 	    if (record->event.pressed && !rec_active()) {
-		memset(notes, 0, notes_max * sizeof(note_t));
+	        rec_reset();
+		memset(&notes, 0, sizeof(notes));
+	        return false;
 	    }
 	    break;
 	case REC_STOP:
 	    if (record->event.pressed) {
-		rec_state.ready = true;
-		rec_state.armed = false;
-		rec_state.playing = false;
-		rec_state.recording = false;
-		rec_state.led_needs_update = true;
-		rec_state.arm_mode = ARM_MODE_NOSEL;
-		break;
+		rec_reset();
 	    }
+	    return false;
 	case REC_ADV:
 	    if (rec_state.playing && record->event.pressed) {
 		rec_state.offset_ms += 5;
@@ -167,41 +174,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		rec_state.offset_ms -= 5;
 	    }
 	    return false;
+	case TG(_REC):
+	    return true;
     }
 
-    return true;
+    if (get_highest_layer(layer_state) == _REC) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+void rec_reset(void) {
+    rec_state.ready = true;
+    rec_state.armed = false;
+    rec_state.rec_start = false;
+    rec_state.play_start = false;
+    rec_state.playing = false;
+    rec_state.recording = false;
+    rec_state.led_needs_update = true;
+    rec_state.arm_mode = ARM_MODE_NOSEL;
+    rec_dermafrazit_last_n = 0;
+    clear_keyboard();
 }
 
 static uint8_t rec_rgb_matrix_last_mode;
 layer_state_t layer_state_set_kb(layer_state_t state) {
     switch (get_highest_layer(state)) {
         case _BASE:
-	    if (rec_state.ready) {
-		if (notes != NULL) {
-		    free(notes);
-		}
-		rgb_matrix_enable();
-		memset(&rec_state, 0, sizeof(rec_state));
-	    }
+	    rec_blank_keyboard();
+	    rgb_matrix_enable();
             break;
         case _REC:
 	    rec_rgb_matrix_last_mode = rgb_matrix_get_mode();
 	    rgb_matrix_disable();
 
-            rec_state.ready = true;
-            rec_state.led_needs_update = true;
-	    rec_state.playing = false;
-	    rec_state.recording = false;
-            rec_state.rec_start = false;
-            rec_state.play_start = false;
-	    rec_state.warn_blink = false;
-	    rec_state.arm_mode = ARM_MODE_NOSEL;
-
-            notes_max = rec_allocate_notes(notes);
-
+	    rec_reset();
+	    rec_state.led_needs_update = true;
             break;
-	default:
-	    rec_state.ready = false;
     }
     return (state);
 }
@@ -224,7 +234,7 @@ void rec_state_leds() {
 		rec_blink_led_iterations_remaining = 10;
 	} 
 
-	rec_state_blink_led_rgb_all(&rec_blink_led_iterations_remaining, 255, 0, 0);
+	rec_state_blink_led_rgb_all(&rec_blink_led_iterations_remaining, rec_state.warn_color_rgb.r, rec_state.warn_color_rgb.g, rec_state.warn_color_rgb.b);
 	if (rec_blink_led_iterations_remaining == 0) {
 	    rec_state.warn_blink = false;
 	    rec_state.led_needs_update = true;
@@ -243,18 +253,12 @@ void rec_state_leds() {
 	    break;
 	case ARM_MODE_NOSEL:
 	    rec_state_standby_led_rgb(REC_REC, 255, 0, 0);
-	    rec_state_standby_led_rgb(REC_PLY, 255, 255, 255);
+	    rec_state_standby_led_rgb(REC_PLY, 0, 255, 0);
 	    break;
     }
 
-    if (rec_state.armed && rec_state.led_needs_update) {
-        rec_state_standby_led(KC_Z);
-        rec_state_standby_led(KC_X);
-    } else if (rec_state.armed && !rec_state.led_needs_update) {
-        rec_state_blink_led(REC_ARM);
-    }
-
     if (rec_state.ready && rec_state.led_needs_update) {
+        rec_blank_keyboard();
         rec_state_standby_led(REC_ADV);
         rec_state_standby_led(REC_RET);
         rec_state_standby_led(REC_CLR);
@@ -262,11 +266,28 @@ void rec_state_leds() {
         rec_state_standby_led(REC_STOP);
         rec_state_standby_led(TG(_REC));
 	rec_state_standby_led_rgb(REC_REC, 255, 0, 0);
-	rec_state_standby_led_rgb(REC_PLY, 255, 255, 255);
+	rec_state_standby_led_rgb(REC_PLY, 0, 255, 0);
+    }
+
+    if (rec_state.armed && rec_state.led_needs_update) {
+        rec_state_standby_led(KC_Z);
+        rec_state_standby_led(KC_X);
+    } else if (rec_state.armed && !rec_state.led_needs_update && !rec_active()) {
+        rec_state_blink_led(REC_ARM);
     }
 
     rec_state.led_needs_update = false;
     last_arm_mode = rec_state.arm_mode;
+}
+
+void rec_blank_keyboard(void) {
+    rgb_matrix_set_color_all(0, 0, 0);
+}
+
+void rec_set_warn_color(RGB rgb) {
+    rec_state.warn_color_rgb.r = rgb.r;
+    rec_state.warn_color_rgb.g = rgb.g;
+    rec_state.warn_color_rgb.b = rgb.b;
 }
 
 void rec_state_standby_led(uint16_t keycode) {
@@ -302,7 +323,7 @@ void rec_state_blink_led_rgb_all(uint8_t *iterations, int r, int g, int b) {
     if (timer_elapsed(rec_state_led_timer_all) > 100) {
         switch (rec_state_led_blink_state_all) {
             case 0:
-                rgb_matrix_set_color_all(0, 0, 0);
+                rec_blank_keyboard();
                 break;
             case 1:
                 rgb_matrix_set_color_all(r, g, b);
@@ -311,7 +332,7 @@ void rec_state_blink_led_rgb_all(uint8_t *iterations, int r, int g, int b) {
 	(*iterations)--;
 
 	if (!*iterations) {
-            rgb_matrix_set_color_all(0, 0, 0);
+	    rec_blank_keyboard();
 	    rec_state.led_needs_update = true;
 	    rec_state_led_blink_state_all = 1;
 	    return;
@@ -341,51 +362,110 @@ void matrix_scan_user() {
     }
 }
 
+uint16_t rec_record_current_note;
+uint16_t rec_record_timer;
+
+// last_key is z or x, 254 to not record another note until changed again, and 255 is for key release
 void rec_record() {
     if (rec_state.rec_start && !rec_state.recording) {
+        memset(&notes, 0, sizeof(notes));
+	rec_record_current_note = 0;
         rec_state.rec_start = false;
         rec_state.recording = true;
-    } else if (rec_state.recording == true) {
-        rec_state.recording = false;
-        rec_state.led_needs_update = true;	
-    }
-}
+    } else if (rec_state.recording) {
+        if (rec_state.last_key < 254) /* key pressed */ {
+	    // We can't store this.  Maybe I can reduce the accuracy and double the time
+	    if (timer_elapsed(rec_record_timer) > 255) {
+                    rec_set_warn_color((RGB){ 0, 255, 255 });
+		    rec_state.warn_blink = true;
+		    rec_reset();
+		    return;
+	    }
+	    // Difference between rec_record_timer and now will be time since last release
+            notes[rec_record_current_note].key = rec_state.last_key; 
+	    if (rec_record_current_note > 0) {
+		notes[rec_record_current_note-1].delay_ms = timer_elapsed(rec_record_timer);
+	    }
+	    // Set up for key release
+            rec_record_timer = timer_read();
+	} else if (rec_state.last_key == 254)  { /* key released */ {
+		notes[rec_record_current_note].length_ms = timer_elapsed(rec_record_timer);
+		// Set up timer for next delay calculation
+		rec_record_timer = timer_read();
+		rec_record_current_note++;
+		rec_state.last_key = 255;
+		rec_dermafrazit(notes_max/rec_record_current_note, false);
+	    }
 
-void rec_play() {
-    static uint16_t temp_timer;
-
-    if (rec_state.play_start && !rec_state.playing) {
-	// Do some init
-	temp_timer = timer_read();
-	rec_state.playing = true;
-	rec_state.armed = false;
-    } else if (rec_state.playing == true) {
-	rec_state.play_start = false;
-	if (timer_elapsed(temp_timer) > 3000) {
-	    rec_state.playing = false;
-            rec_state.led_needs_update = true;	
+	    if (rec_record_current_note >= notes_max) {
+		rec_state.recording = false;
+		rec_reset();
+	    }
 	}
     }
 }
 
-uint16_t rec_allocate_notes(note_t *notes) {
-	uint16_t max_notes = 32;
-	do {
-	    printf("Allocating %i notes for %i bytes: ", max_notes, sizeof(note_t) * max_notes);
-	    notes = (note_t*)malloc(sizeof(note_t) * max_notes);
-	    if (notes != NULL) {
-		free(notes);
-		max_notes += 32;
-		printf("succeeded.\n");
-	    } else {
-		printf("failed.\n");
-		max_notes -= 32;
-	    }
-	} while (notes != NULL);
+uint16_t rec_play_timer;
+uint16_t rec_play_current_note;
+enum rec_play_state_t {
+    PLAY_START,
+    PLAY_LENGTH,
+    PLAY_DELAY
+};
+enum rec_play_state_t rec_play_state;
+void rec_play() {
+    if (rec_state.play_start && !rec_state.playing) {
+	rec_state.playing = true;
+	rec_state.play_start = false;
+        rec_play_current_note = 0;
+	rec_play_state = PLAY_START;
+    } else if (rec_state.playing == true) {
+        if (rec_play_current_note >= rec_record_current_note) {
+	    rec_set_warn_color((RGB){ 255, 255, 255 });
+	    rec_state.warn_blink = true;
+	    rec_reset();
+	    return;
+	}
 
-	notes = (note_t*) malloc(sizeof(note_t) * max_notes);	
-	printf("Max notes allocated: %i, bytes: %i\n", max_notes, max_notes * sizeof(note_t));
-	return max_notes;
+        // There's no delay for starting the first note (the key press starts the play)
+        switch (rec_play_state) {
+	    case PLAY_START:
+                register_code(notes[rec_play_current_note].key);
+	    	rec_play_timer = timer_read();
+	    	rec_play_state = PLAY_LENGTH;
+		break;
+	    case PLAY_LENGTH:
+		if (timer_elapsed(rec_play_timer) >= notes[rec_play_current_note].length_ms) {
+		    unregister_code(notes[rec_play_current_note].key);
+	    	    rec_play_timer = timer_read();
+		    rec_play_state = PLAY_DELAY;
+		}
+		break;
+	    case PLAY_DELAY:
+		if (timer_elapsed(rec_play_timer) >= notes[rec_play_current_note].delay_ms) {
+               	    rec_play_timer = timer_read();
+		    rec_play_state = PLAY_START;
+		    rec_play_current_note++;
+		}
+	}
+    }
+}
+
+void rec_dermafrazit(float ratio, bool mode) {
+    uint8_t light_n = (uint8_t) ratio * 10;
+    if (rec_dermafrazit_last_n == light_n) {
+        return;
+    } else {
+        rec_dermafrazit_last_n = light_n;
+    }
+
+    for (uint8_t keycode = KC_1; keycode < KC_MINS; keycode++) {
+	if (light_n >= keycode) {
+            rgb_matrix_set_color(keycode_to_index(keycode), 255, 0, 0);
+	} else {
+	    rgb_matrix_set_color(keycode_to_index(keycode), 0, 255, 0);
+	}
+    }
 }
 
 void rgb_matrix_reload_from_eeprom() {

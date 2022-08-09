@@ -64,5 +64,5 @@
 #define LED_CAPS_LOCK_PIN   B14
 #define LED_SCROLL_LOCK_PIN B15
 #define LED_PIN_ON_STATE    0
-
+#define DISABLE_RGB_MATRIX_CYCLE_LEFT_RIGHT
 #include "config_led.h"
