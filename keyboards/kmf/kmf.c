@@ -388,7 +388,7 @@ void rec_record() {
         rec_state.rec_start = false;
         rec_state.recording = true;
     } else if (rec_state.recording) {
-	rec_dermafrazit(notes_max/rec_record_current_note, false);
+	rec_dermafrazit(rec_record_current_note, notes_max, false);
 
         if (rec_state.last_key < 254) /* key pressed */ {
 	    // We can't store this.  Maybe I can reduce the accuracy and double the time
@@ -402,6 +402,8 @@ void rec_record() {
             notes[rec_record_current_note].key = rec_state.last_key; 
 	    if (rec_record_current_note > 0) {
 		notes[rec_record_current_note-1].delay_ms = timer_elapsed(rec_record_timer);
+	    } else {
+		notes[rec_record_current_note].delay_ms = timer_elapsed(rec_record_timer);
 	    }
 	    // Set up for key release
             rec_record_timer = timer_read();
@@ -415,6 +417,8 @@ void rec_record() {
 
 	    if (rec_record_current_note >= notes_max) {
 		rec_state.recording = false;
+		rec_set_warn_color((RGB){ 64, 96, 128});
+		rec_state.warn_blink = true;
 		rec_reset();
 	    }
 	}
@@ -436,7 +440,7 @@ void rec_play() {
         rec_play_current_note = 0;
 	rec_play_state = PLAY_START;
     } else if (rec_state.playing == true) {
-	rec_dermafrazit(notes_max/rec_play_current_note, false);
+	rec_dermafrazit(rec_play_current_note, notes_max, false);
 
         if (rec_play_current_note >= rec_record_current_note) {
 	    rec_set_warn_color((RGB){ 255, 255, 255 });
