@@ -64,7 +64,7 @@ uint8_t keycode_to_index(uint16_t keycode);
 bool rec_active(void);
 void rec_state_standby_led_rgb(uint16_t keycode, uint8_t r, uint8_t g, uint8_t b);
 void rec_reset(void);
-void rec_dermafrazit(float ratio, bool mode);
+void rec_dermafrazit(uint32_t index, uint32_t max, bool mode);
 void rec_set_warn_color(RGB rgb);
 void rec_blank_keyboard(void);
 
@@ -469,8 +469,9 @@ void rec_play() {
     }
 }
 
-void rec_dermafrazit(float ratio, bool mode) {
-    uint8_t light_n = (uint8_t) ratio * 10;
+void rec_dermafrazit(uint32_t index, uint32_t max, bool mode) {
+    uint8_t light_n = ((index + 0) / notes_max) * 10;
+
     if (rec_dermafrazit_last_n == light_n) {
         return;
     } else {

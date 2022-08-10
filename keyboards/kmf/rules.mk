@@ -45,3 +45,8 @@ RGB_MATRIX_DRIVER = SN32F24xB
 
 # Debugging ram usage
 TOP_SYMBOLS = yes
+
+# Debugging
+OPT_DEFS += -g
+OPT = 0
+
