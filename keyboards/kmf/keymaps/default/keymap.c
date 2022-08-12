@@ -20,7 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
 #include "keymap.h"
+
 #define XXX KC_NO
+#define ___ KC_TRNS
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /*  Row:        0           1           2           3        4           5        6        7           8           9           10          11          12          13          14          15          16          17          18          19          20     */
@@ -42,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	      ),
     [_REC]   = LAYOUT_default(
 	    	   KC_ESC,                 XXX,        XXX,     XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,      
-                   XXX,        XXX,        XXX,        XXX,     XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,  
+                   XXX,        ___,        ___,        ___,     ___,        ___,     ___,     ___,        ___,        ___,        ___,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,  
                    XXX,        TG(_REC),   XXX,        XXX,     REC_CLR,    XXX,     XXX,     XXX,        REC_REC,    REC_PLY,    XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,        XXX,  
                    XXX,        REC_ARM,    REC_STOP,   XXX,     XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,                    XXX,                                            XXX,        XXX,        XXX,
                    XXX,                    KC_Z,       KC_X,    XXX,        XXX,     XXX,     XXX,        XXX,        XXX,        XXX,        XXX,                    XXX,                    XXX,                    XXX,        XXX,        XXX,        XXX,  
