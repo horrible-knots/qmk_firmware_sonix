@@ -28,12 +28,15 @@
 #define PRODUCT         Onn Mechanical Gaming Keyboard
 #define DESCRIPTION     KMF Onn Mechanical Gaming Keyboard
 
+#define RAW_USAGE_PAGE 0xFF31
+#define RAW_USAGE_ID 0x74
+
 /* key matrix size */
 #define MATRIX_ROWS 6
 #define MATRIX_COLS 21
 
 #define DIODE_DIRECTION ROW2COL
-#define QMK_KEYS_PER_SCAN 8
+#define QMK_KEYS_PER_SCAN 1
 
 #undef MATRIX_COL_PINS
 #undef MATRIX_ROW_PINS
@@ -42,7 +45,7 @@
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
 #define DEBOUNCE  5
-#define MATRIX_KEY_SAMPLE_DELAY 10
+#define MATRIX_KEY_SAMPLE_DELAY 1
 #define GPIO_INPUT_PIN_DELAY 1
 #define USB_POLLING_INTERVAL_MS 1
 

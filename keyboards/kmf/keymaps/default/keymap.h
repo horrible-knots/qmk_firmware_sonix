@@ -4,6 +4,7 @@ enum layer_names {
     _BASE,
     _FN,
     _REC,
+    _SHIFT,
 };
 
 enum my_keycodes {
