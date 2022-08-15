@@ -49,7 +49,7 @@ typedef struct {
 uint8_t debug_light;
 rec_state_t rec_state;
 #ifdef RAW_ENABLE
-note_t notes[500];
+note_t notes[300];
 #else
 note_t notes[700];
 #endif
@@ -79,8 +79,8 @@ void rec_blank_keyboard(void);
 void rec_set_last_key(uint16_t keycode, keyrecord_t *record);
 uint8_t rec_normalize(uint32_t input);
 uint32_t rec_unnormalize(uint8_t input);
-void rec_toggle_led(bool forced_state);
 void hid_printf(const char *fmt, ...);
+void toggle_led(uint32_t pin, uint8_t count, uint8_t delay_ms);
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CONSOLE_ENABLE
@@ -122,6 +122,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 // catch and release to the next switch statement
                 break;
         }
+    }
+
+    switch (get_highest_layer(layer_state)) {
+	static uint16_t realcode;
+	static bool shift_registered;
+	case _SHIFT:
+	    realcode = keymap_key_to_keycode(_SHIFT, record->event.key);
+	    if (record->event.pressed) {
+		if (realcode == KC_TRNS) {
+		    shift_registered = true;
+		    add_mods(MOD_MASK_SHIFT);
+		    register_code(keycode);
+		    return false;
+		} 
+	    } else {
+		if (realcode == KC_TRNS && shift_registered) {
+		    shift_registered = false;
+		    unregister_code(keycode);
+		    del_mods(MOD_MASK_SHIFT);
+		    return true;
+		}
+	    }
+            break;
     }
 
     switch (keycode) {
@@ -199,6 +222,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
+void toggle_led(uint32_t pin, uint8_t count, uint8_t delay_ms) {
+    uint16_t timer = timer_read();
+    while (count--) {
+        writePin(pin, gamer_mode_led_state);
+	gamer_mode_led_state ^= 1;
+	while (timer_elapsed(timer) < delay_ms);
+	timer = timer_read();
+    }
+}
+
+
 void rec_set_last_key(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case KC_Z:
@@ -222,21 +256,6 @@ void rec_reset(void) {
     rec_dermafrazit_last_n = 0;
     clear_keyboard();
 }
-
-/*
-void vs_printf(const char *fmt, ...) {
-    char buf[80];
-    va_list argp;
-
-    va_start(argp, fmt);
-    memset(&buf[0], 0, sizeof(buf));
-    vsnprintf(&buf[0], sizeof(buf), fmt, argp);
-    va_end(argp);
-
-    for (int i = 0; i < sizeof(buf) && buf[i] != '\0'; i++) {
-        virtser_send(buf[i]);
-    }
-}*/
 
 void hid_printf(const char *fmt, ...) {
 #ifdef RAW_ENABLE
@@ -412,12 +431,6 @@ void rec_state_blink_led_rgb_all(uint8_t *iterations, int r, int g, int b) {
         rec_state_led_blink_state_all ^= 1;
     } 
 } 
-
-void rec_toggle_led(bool forced_state) {
-    gamer_mode_led_state = !forced_state;
-
-    writePin(LED_GAMER_MODE_PIN, gamer_mode_led_state);
-}
 
 //static uint16_t rec_mode_active_led_blink_timer;
 void matrix_scan_user() {

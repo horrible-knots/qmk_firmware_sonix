@@ -20,8 +20,8 @@ VIRTSER_ENABLE = no
 NKRO_ENABLE = yes       # USB Nkey Rollover
 AUDIO_ENABLE = no
 WAIT_FOR_USB = no
-RAW_ENABLE = no
-TAP_DANCE_ENABLE = yes
+RAW_ENABLE = yes
+TAP_DANCE_ENABLE = no
 KEYBOARD_SHARED_EP = yes
 #DEBOUNCE_TYPE = sym_eager_pk
 # Debug
