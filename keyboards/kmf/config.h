@@ -36,7 +36,7 @@
 #define MATRIX_COLS 21
 
 #define DIODE_DIRECTION ROW2COL
-#define QMK_KEYS_PER_SCAN 1
+#define QMK_KEYS_PER_SCAN 104
 
 #undef MATRIX_COL_PINS
 #undef MATRIX_ROW_PINS
@@ -45,8 +45,8 @@
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
 #define DEBOUNCE  5
-#define MATRIX_KEY_SAMPLE_DELAY 1
-#define GPIO_INPUT_PIN_DELAY 1
+#define MATRIX_KEY_SAMPLE_DELAY 5
+#define GPIO_INPUT_PIN_DELAY 5
 #define USB_POLLING_INTERVAL_MS 1
 
 /* Enable NKRO - Up to 248 keys at the same time. */

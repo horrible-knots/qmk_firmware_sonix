@@ -20,13 +20,13 @@ VIRTSER_ENABLE = no
 NKRO_ENABLE = yes       # USB Nkey Rollover
 AUDIO_ENABLE = no
 WAIT_FOR_USB = no
-RAW_ENABLE = yes
+RAW_ENABLE = no
 TAP_DANCE_ENABLE = no
 KEYBOARD_SHARED_EP = yes
 #DEBOUNCE_TYPE = sym_eager_pk
 # Debug
 MAGIC_KEYCODE_ENABLE = yes # See quantum/command.c and quantum/command.h for available commands
-CONSOLE_ENABLE = no        # Console for debug.
+CONSOLE_ENABLE = no         # Console for debug.
 COMMAND_ENABLE = yes       # Commands for debug and configuration.
 BOOTMAGIC_ENABLE = yes     # Hold down escape while powering up to jump to bootloader.  Seems broken currently.
 # Choose which key to start up in bootloader by matrix grid.

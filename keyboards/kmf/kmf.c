@@ -84,8 +84,8 @@ void toggle_led(uint32_t pin, uint8_t count, uint8_t delay_ms);
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CONSOLE_ENABLE
-       uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", 
-           keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
+//       dprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", 
+ //          keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
 #endif
 
     // When recording/playing, only these keys will be active
@@ -281,12 +281,12 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
             rec_state.ready = false;
 
             rec_blank_keyboard();
-            rgb_matrix_enable();
+            rgb_matrix_enable_noeeprom();
             rgb_matrix_mode_noeeprom(rec_rgb_matrix_last_mode);
             break;
         case _REC:
             rec_rgb_matrix_last_mode = rgb_matrix_get_mode();
-            rgb_matrix_disable();
+            rgb_matrix_disable_noeeprom();
 
             rec_reset();
             break;
@@ -577,7 +577,7 @@ void rec_play() {
 		hid_printf("Holding for %i (%li) ms... (timer: %li, elapsed: %li)", notes[rec_play_current_note].length_ms, rec_unnormalize(notes[rec_play_current_note].length_ms), 
 	            rec_play_timer, timer_elapsed32(rec_play_timer));
 #endif
-                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].length_ms)) {
+                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].length_ms) + (rand() % 5)) {
                     unregister_code(notes[rec_play_current_note].key);
 #ifdef RAW_ENABLE
 		    hid_printf("Unregistering key %i done.\n", notes[rec_play_current_note].key);
@@ -590,8 +590,9 @@ void rec_play() {
 #ifdef RAW_ENABLE
 		hid_printf("Waiting before next key %i (%li) ms... (timer: %li, elapsed: %li)", notes[rec_play_current_note].delay_ms, rec_unnormalize(notes[rec_play_current_note].delay_ms), 
 	            rec_play_timer, timer_elapsed32(rec_play_timer));
+		hid_printf("A number: %i\n", (int)((float)(rand() % rec_unnormalize(notes[rec_play_current_note].delay_ms)) * 0.02));
 #endif
-                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].delay_ms) + rec_state.offset_ms) {
+                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].delay_ms) + rec_state.offset_ms + (rand() % 5)) {
                     rec_play_state = PLAY_START;
                     rec_play_timer = timer_read32();
                     rec_play_current_note++;

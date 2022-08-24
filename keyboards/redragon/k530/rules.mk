@@ -25,6 +25,7 @@ SERIAL_LINK_ENABLE = no
 WAIT_FOR_USB = no
 CUSTOM_MATRIX = yes
 KEYBOARD_SHARED_EP = yes
+OPENRGB_ENABLE = yes
 
 # Custom RGB matrix handling
 RGB_MATRIX_ENABLE = yes
