@@ -1,0 +1,12 @@
+{
+    "keyboard_name": "Keychron K2 white",
+    "url": "https://www.keychron.com/products/keychron-k2-hot-swappable-wireless-mechanical-keyboard",
+    "maintainer": "pprablanc",
+    "width": 16,
+    "height": 6,
+    "layouts": {
+        "LAYOUT": {
+            "layout": []
+        }
+    }
+}
