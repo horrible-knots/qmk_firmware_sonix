@@ -35,7 +35,7 @@ typedef struct {
     bool warn_blink;
     RGB warn_color_rgb;
     enum ARM_MODE arm_mode;
-    uint8_t offset_ms;
+    int8_t offset_ms;
     uint8_t last_key;
     uint8_t last_key_raw;
 } rec_state_t;
@@ -51,7 +51,7 @@ rec_state_t rec_state;
 #ifdef RAW_ENABLE
 note_t notes[300];
 #else
-note_t notes[700];
+note_t notes[800];
 #endif
 uint8_t rec_dermafrazit_last_n;
 uint16_t notes_max = sizeof(notes) / sizeof(note_t);
@@ -81,6 +81,7 @@ uint8_t rec_normalize(uint32_t input);
 uint32_t rec_unnormalize(uint8_t input);
 void hid_printf(const char *fmt, ...);
 void toggle_led(uint32_t pin, uint8_t count, uint8_t delay_ms);
+int8_t get_random_ms(uint8_t max);
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CONSOLE_ENABLE
@@ -569,7 +570,7 @@ void rec_play() {
 		hid_printf("Registered key: %i\n", notes[rec_play_current_note].key);
 #endif
                 rec_play_state = PLAY_LENGTH;
-                rec_play_timer = timer_read32();
+                rec_play_timer = timer_read32() + get_random_ms(5) + rec_state.offset_ms;
                 register_code(notes[rec_play_current_note].key);
                 break;
             case PLAY_LENGTH:
@@ -577,29 +578,38 @@ void rec_play() {
 		hid_printf("Holding for %i (%li) ms... (timer: %li, elapsed: %li)", notes[rec_play_current_note].length_ms, rec_unnormalize(notes[rec_play_current_note].length_ms), 
 	            rec_play_timer, timer_elapsed32(rec_play_timer));
 #endif
-                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].length_ms) + (rand() % 5)) {
+                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].length_ms)) {
                     unregister_code(notes[rec_play_current_note].key);
 #ifdef RAW_ENABLE
 		    hid_printf("Unregistering key %i done.\n", notes[rec_play_current_note].key);
 #endif
                     rec_play_state = PLAY_DELAY;
-                    rec_play_timer = timer_read32();
+                    rec_play_timer = timer_read32() + get_random_ms(5) + rec_state.offset_ms;
                 }
                 break;
             case PLAY_DELAY:
 #ifdef RAW_ENABLE
 		hid_printf("Waiting before next key %i (%li) ms... (timer: %li, elapsed: %li)", notes[rec_play_current_note].delay_ms, rec_unnormalize(notes[rec_play_current_note].delay_ms), 
 	            rec_play_timer, timer_elapsed32(rec_play_timer));
-		hid_printf("A number: %i\n", (int)((float)(rand() % rec_unnormalize(notes[rec_play_current_note].delay_ms)) * 0.02));
 #endif
-                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].delay_ms) + rec_state.offset_ms + (rand() % 5)) {
+                if (timer_elapsed32(rec_play_timer) >= rec_unnormalize(notes[rec_play_current_note].delay_ms)) {
                     rec_play_state = PLAY_START;
-                    rec_play_timer = timer_read32();
+                    rec_play_timer = timer_read32() + get_random_ms(5) + rec_state.offset_ms;
                     rec_play_current_note++;
                 }
                 break;
         }
     }
+}
+
+int8_t get_random_ms(uint8_t max) {
+  switch (rand() % 2) {
+    case 0:
+      return (rand() % max);
+    case 1:
+      return (0-(rand() % max));
+  }
+  return 0;
 }
 
 uint16_t rec_dermafrazit_timer;
