@@ -91,12 +91,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	*/
 };
 
-void rgb_matrix_indicators_user(void)
-{
+bool rgb_matrix_indicators_user(void) {
 	uint8_t this_led = host_keyboard_leds();
 
 	if (!g_suspend_state && rgb_matrix_config.enable) {
-		switch (biton32(layer_state)) {
+		switch (get_highest_layer(layer_state)) {
 		case _NAV:
 			if (this_led & (1 << USB_LED_NUM_LOCK)) {
 				rgb_matrix_set_color(13, 0xFF, 0x00, 0x00);
@@ -218,6 +217,7 @@ void rgb_matrix_indicators_user(void)
 	if (this_led & (1 << USB_LED_CAPS_LOCK)) {
 		rgb_matrix_set_color(40, 0xFF, 0xFF, 0xFF);
 	}
+    return false;
 }
 
 void matrix_init_user(void)

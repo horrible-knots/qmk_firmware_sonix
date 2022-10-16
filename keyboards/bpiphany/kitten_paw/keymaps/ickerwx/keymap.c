@@ -89,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 void matrix_scan_user(void) {
     uint8_t layer;
-    layer = biton32(layer_state);
+    layer = get_highest_layer(layer_state);
 
     if (current_layer_global != layer) {
         current_layer_global = layer;
@@ -132,11 +132,11 @@ void tap_helper(keyrecord_t *record, uint16_t orig_mod, uint16_t macro_mod, uint
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint8_t layer;
-    layer = biton32(layer_state);
+    layer = get_highest_layer(layer_state);
     if (layer == PROG2) {
          if (keycode >= KC_A && keycode <= KC_EXSEL && \
              !(  // do not send LSFT + these keycodes, they are needed for emulating the US layout
-                 keycode == KC_NONUS_BSLASH ||
+                 keycode == KC_NUBS ||
                  keycode == KC_RBRC ||
                  keycode == KC_BSLS ||
                  keycode == KC_GRV

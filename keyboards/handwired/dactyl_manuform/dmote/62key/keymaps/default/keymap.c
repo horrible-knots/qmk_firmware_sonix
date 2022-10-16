@@ -17,8 +17,8 @@ enum layer_names {
 #define SLQ     RALT(KC_9)  // Single left-side quotation mark (in Colemak).
 #define SRQ     RALT(KC_0)
 #define EMDASH  RALT(LSFT(KC_MINUS))  // Em dash character (in Colemak).
-#define BK_LCTL CTL_T(KC_LBRACKET)
-#define BK_RCTL RCTL_T(KC_RBRACKET)
+#define BK_LCTL CTL_T(KC_LEFT_BRACKET)
+#define BK_RCTL RCTL_T(KC_RIGHT_BRACKET)
 // TODO: Mod-tap ALT with a curvilinear brace.
 // https://github.com/qmk/qmk_firmware/pull/2055
 
@@ -68,7 +68,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  _______, _______, EMDASH,
                                                      _______, _______,
 
-                     KC_F6,   KC_F7,   KC_F8,   KC_F9,   RESET,   KC_WAKE, // *
+                     KC_F6,   KC_F7,   KC_F8,   KC_F9,   QK_BOOT,   KC_WAKE, // *
                      KC_6,    KC_7,    KC_8,    KC_9,    KC_F10,  KC_F11,
                      KC_CIRC, KC_AMPR, KC_ASTR, KC_APP,  KC_0,    PASTE,
                               KC_MS_L, KC_MS_U, KC_MS_R, KC_PSCR, RGB_TOG,

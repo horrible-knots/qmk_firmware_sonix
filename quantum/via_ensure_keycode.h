@@ -195,6 +195,8 @@ _Static_assert(KC_MFFD                == 0x00BB, "");
 _Static_assert(KC_MRWD                == 0x00BC, "");
 _Static_assert(KC_BRIU                == 0x00BD, "");
 _Static_assert(KC_BRID                == 0x00BE, "");
+_Static_assert(KC_CPNL                == 0x00BF, "");
+_Static_assert(KC_ASST                == 0x00C0, "");
 
 _Static_assert(KC_LEFT_CTRL           == 0x00E0, "");
 _Static_assert(KC_LEFT_SHIFT          == 0x00E1, "");
@@ -244,12 +246,12 @@ _Static_assert(KC_LT                  == 0x0236, "");
 _Static_assert(KC_GT                  == 0x0237, "");
 _Static_assert(KC_QUES                == 0x0238, "");
 
-_Static_assert(RESET                  == 0x5C00, "");
-_Static_assert(DEBUG                  == 0x5C01, "");
+_Static_assert(QK_BOOTLOADER          == 0x5C00, "");
+_Static_assert(QK_DEBUG_TOGGLE        == 0x5C01, "");
 
 _Static_assert(MAGIC_TOGGLE_NKRO      == 0x5C14, "");
 
-_Static_assert(KC_GESC                == 0x5C16, "");
+_Static_assert(QK_GRAVE_ESCAPE        == 0x5C16, "");
 
 _Static_assert(AU_ON                  == 0x5C1D, "");
 _Static_assert(AU_OFF                 == 0x5C1E, "");

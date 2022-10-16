@@ -201,15 +201,25 @@ typedef struct {
     uint32_t usage;
 } __attribute__((packed)) report_programmable_button_t;
 
+#ifdef MOUSE_EXTENDED_REPORT
+typedef int16_t mouse_xy_report_t;
+#else
+typedef int8_t mouse_xy_report_t;
+#endif
+
 typedef struct {
 #ifdef MOUSE_SHARED_EP
     uint8_t report_id;
 #endif
     uint8_t buttons;
-    int8_t  x;
-    int8_t  y;
-    int8_t  v;
-    int8_t  h;
+#ifdef MOUSE_EXTENDED_REPORT
+    int8_t boot_x;
+    int8_t boot_y;
+#endif
+    mouse_xy_report_t x;
+    mouse_xy_report_t y;
+    int8_t            v;
+    int8_t            h;
 } __attribute__((packed)) report_mouse_t;
 
 typedef struct {
@@ -235,7 +245,7 @@ typedef struct {
 #if JOYSTICK_BUTTON_COUNT > 0
     uint8_t buttons[(JOYSTICK_BUTTON_COUNT - 1) / 8 + 1];
 #endif
-} __attribute__((packed)) joystick_report_t;
+} __attribute__((packed)) report_joystick_t;
 
 /* keycode to system usage */
 static inline uint16_t KEYCODE2SYSTEM(uint8_t key) {
@@ -282,6 +292,10 @@ static inline uint16_t KEYCODE2CONSUMER(uint8_t key) {
             return AL_CALCULATOR;
         case KC_MY_COMPUTER:
             return AL_LOCAL_BROWSER;
+        case KC_CONTROL_PANEL:
+            return AL_CONTROL_PANEL;
+        case KC_ASSISTANT:
+            return AL_ASSISTANT;
         case KC_WWW_SEARCH:
             return AC_SEARCH;
         case KC_WWW_HOME:

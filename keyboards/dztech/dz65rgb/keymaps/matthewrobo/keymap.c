@@ -82,8 +82,7 @@ CPS, A,   S,   D,   F,   G,   H,   J,   K,   L,   COL, QOT,  RETURN,   +
 SFT, Z,   X,   C,   V,   B,   N,   M,   COM, DOT, SLS, SHIFT,    UP,   0
 CTL, GUI, ALT,        SPACEBAR,              ALT, FN, CTL, LFT, DWN, RIT
 */
-void rgb_matrix_indicators_user(void)
-{
+bool rgb_matrix_indicators_user(void) {
 	if (IS_HOST_LED_ON(USB_LED_CAPS_LOCK)) {
 		rgb_matrix_set_color(8, 0xFF, 0xFF, 0xFF);
 	}
@@ -91,7 +90,7 @@ void rgb_matrix_indicators_user(void)
 	uint8_t this_led = host_keyboard_leds();
 
 	if (!g_suspend_state && rgb_matrix_config.enable) {
-		switch (biton32(layer_state)) {
+		switch (get_highest_layer(layer_state)) {
 		case _NAV:
 			if (IS_LED_ON(this_led, USB_LED_NUM_LOCK)) {
 				rgb_matrix_set_color(17, 0xFF, 0x00, 0x00);
@@ -208,16 +207,7 @@ void rgb_matrix_indicators_user(void)
 		break;
 		}
 	}
-}
-
-void matrix_init_user(void)
-{
-	//user initialization
-}
-
-void matrix_scan_user(void)
-{
-	//user matrix
+    return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record)

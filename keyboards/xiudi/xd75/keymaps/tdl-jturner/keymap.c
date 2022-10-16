@@ -144,7 +144,7 @@ LT(_LYMD,KC_ESC),  KC_A  ,  KC_R  ,  KC_S  ,  KC_T  ,  KC_D  ,________  ,_______
    LAYOUT_ortho_5x15(
      ________,________,________,________,________,________,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,
      KC_LYDEF,________,________,________,________,________,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,________,
-     ________,________,________,________,________,________,___XX___,___XX___,___XX___,___XX___,___XX___,QWERTY  ,COLEMAK ,___XX___,RESET,
+     ________,________,________,________,________,________,___XX___,___XX___,___XX___,___XX___,___XX___,QWERTY  ,COLEMAK ,___XX___,QK_BOOT,
      ________,________,________,________,________,________,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,___XX___,
      ________,________,________,________,________,________,________,________,________,________,___XX___,___XX___,___XX___,___XX___,___XX___
    ),
@@ -180,7 +180,7 @@ void matrix_init_user(void) {
 
 //Set a color based on the layer
 layer_state_t layer_state_set_user(layer_state_t state) {
-  switch(biton32(state)) {
+  switch(get_highest_layer(state)) {
     case _LYFK:
       rgblight_setrgb_user_LYFK();
       break;
@@ -265,14 +265,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             else {
               unregister_code(KC_RSHIFT);
             }
-          register_code(KC_BSLASH);
+          register_code(KC_BACKSLASH);
         }
         else {
           register_code(KC_SLSH);
         }
       }
       else {
-        unregister_code(KC_BSLASH);
+        unregister_code(KC_BACKSLASH);
         unregister_code (KC_SLSH);
       }
       return false;
