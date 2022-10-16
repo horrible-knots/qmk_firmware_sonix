@@ -32,11 +32,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    KC_LCTL,    KC_LWIN,    KC_LALT,                                  KC_SPC,                                      KC_RALT,    KC_APP,     MO(_FN),    KC_RCTL,    KC_LEFT,    KC_DOWN,    KC_RIGHT,               KC_P0,      KC_PDOT    
 	      ),
     [_FN]   = LAYOUT_default(
-<<<<<<< Updated upstream
-	    	   RESET,                  KC_VOLD,    KC_VOLU, KC_MUTE,    KC_MSTP, KC_MPRV, KC_MPLY,    KC_MNXT,    KC_MAIL,    KC_WHOM,    KC_CALC,    RGB_TOG,    _______,    _______,    _______,    KC_SLEP,    
-=======
 	    	   Q_RESET,                  KC_VOLD,    KC_VOLU, KC_MUTE,    KC_MSTP, KC_MPRV, KC_MPLY,    KC_MNXT,    KC_MAIL,    KC_WHOM,    KC_CALC,    RGB_TOG,    _______,    _______,    _______,    KC_SLEP,    
->>>>>>> Stashed changes
                    _______,    _______,    _______,    _______, _______,    _______, _______, _______,    _______,    _______,    _______,    RGB_SPD,    RGB_SPI,    _______,    RGB_M_P,    RGB_M_B,    RGB_MOD ,   _______,    _______,    _______,    _______ ,
                    _______,    _______,    _______,    _______,TG(_REC),    _______, _______, _______,    _______,    _______,    _______,    _______,                _______,    RGB_M_SW,   RGB_M_G,    RGB_RMOD,   _______,    _______,    _______,    _______ ,
                    _______,    _______,    _______,    _______, _______,    _______, _______, _______,    _______,    _______,    _______,    _______,    	      _______,                                        _______,    _______,    _______,    
