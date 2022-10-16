@@ -24,9 +24,9 @@
 #define PRODUCT_ID      0x1205
 #define DEVICE_VER      0x0000
 
-#define MANUFACTURER    KMF
-#define PRODUCT         Onn Mechanical Gaming Keyboard
-#define DESCRIPTION     KMF Onn Mechanical Gaming Keyboard
+#define MANUFACTURER    "KMF"
+#define PRODUCT         "Onn Mechanical Gaming Keyboard"
+#define DESCRIPTION     "KMF Onn Mechanical Gaming Keyboard"
 
 #define RAW_USAGE_PAGE 0xFF31
 #define RAW_USAGE_ID 0x74

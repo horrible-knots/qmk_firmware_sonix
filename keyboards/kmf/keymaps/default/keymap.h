@@ -1,4 +1,6 @@
 #include QMK_KEYBOARD_H
+#ifndef _KEYMAP_H_
+#define _KEYMAP_H_
 
 enum layer_names {
     _BASE,
@@ -17,3 +19,5 @@ enum my_keycodes {
     REC_RET,
     REC_CLR
 };
+
+#endif

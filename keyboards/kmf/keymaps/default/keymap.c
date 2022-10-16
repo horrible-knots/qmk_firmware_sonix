@@ -14,11 +14,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include QMK_KEYBOARD_H
 
-// Each layer gets a name for readability, which is then used in the keymap matrix below.
-// The underscores don't mean anything - you can have a layer called STUFF or any other name.
-// Layer names don't all need to be of the same length, obviously, and you can also skip them
-// entirely and just use numbers.
 #include "keymap.h"
 
 #define ___ KC_TRNS
@@ -35,7 +32,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    KC_LCTL,    KC_LWIN,    KC_LALT,                                  KC_SPC,                                      KC_RALT,    KC_APP,     MO(_FN),    KC_RCTL,    KC_LEFT,    KC_DOWN,    KC_RIGHT,               KC_P0,      KC_PDOT    
 	      ),
     [_FN]   = LAYOUT_default(
+<<<<<<< Updated upstream
 	    	   RESET,                  KC_VOLD,    KC_VOLU, KC_MUTE,    KC_MSTP, KC_MPRV, KC_MPLY,    KC_MNXT,    KC_MAIL,    KC_WHOM,    KC_CALC,    RGB_TOG,    _______,    _______,    _______,    KC_SLEP,    
+=======
+	    	   Q_RESET,                  KC_VOLD,    KC_VOLU, KC_MUTE,    KC_MSTP, KC_MPRV, KC_MPLY,    KC_MNXT,    KC_MAIL,    KC_WHOM,    KC_CALC,    RGB_TOG,    _______,    _______,    _______,    KC_SLEP,    
+>>>>>>> Stashed changes
                    _______,    _______,    _______,    _______, _______,    _______, _______, _______,    _______,    _______,    _______,    RGB_SPD,    RGB_SPI,    _______,    RGB_M_P,    RGB_M_B,    RGB_MOD ,   _______,    _______,    _______,    _______ ,
                    _______,    _______,    _______,    _______,TG(_REC),    _______, _______, _______,    _______,    _______,    _______,    _______,                _______,    RGB_M_SW,   RGB_M_G,    RGB_RMOD,   _______,    _______,    _______,    _______ ,
                    _______,    _______,    _______,    _______, _______,    _______, _______, _______,    _______,    _______,    _______,    _______,    	      _______,                                        _______,    _______,    _______,    

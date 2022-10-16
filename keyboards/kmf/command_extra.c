@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include "keymap.h"
 #include "keyboard.h"
 #include "command_extra.h"
 #include "openrgb_eeprom.h"

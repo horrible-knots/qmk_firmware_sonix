@@ -6,7 +6,7 @@
 #include "timer.h"
 #include "kmf.h"
 #include "config.h"
-#include "keymaps/default/keymap.h"
+//#include "keymaps/default/keymap.h"
 #include "config_led.h"
 #include "openrgb_eeprom.h"
 #include <stdint.h>
@@ -51,7 +51,7 @@ rec_state_t rec_state;
 #ifdef RAW_ENABLE
 note_t notes[300];
 #else
-note_t notes[800];
+note_t notes[500];
 #endif
 uint8_t rec_dermafrazit_last_n;
 uint16_t notes_max = sizeof(notes) / sizeof(note_t);
@@ -63,7 +63,6 @@ void gamer_mode_state_to_eeprom(int state);
 extern void matrix_init(void);
 void rec_play(void);
 void rec_record(void);
-void rgb_matrix_reload_from_eeprom(void);
 void rec_state_leds(void);
 void rec_state_blink_led(uint16_t keycode);
 void rec_state_blink_led_rgb(uint16_t keycode, int r, int g, int b);
@@ -629,11 +628,6 @@ void rec_dermafrazit(uint32_t index, uint32_t max, bool mode) {
             rgb_matrix_set_color(keycode_to_index(keycode), 255, 255, 255);
         }
     }
-}
-
-void rgb_matrix_reload_from_eeprom() {
-    eeprom_read_block(&rgb_matrix_config, EECONFIG_RGB_MATRIX, sizeof(rgb_matrix_config));             
-    rgb_matrix_mode_noeeprom(rgb_matrix_config.mode);
 }
 
 uint8_t keycode_to_index(uint16_t keycode) {
