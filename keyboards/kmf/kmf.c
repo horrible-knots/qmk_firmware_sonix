@@ -282,7 +282,7 @@ layer_state_t layer_state_set_kb(layer_state_t state) {
 
             rec_blank_keyboard();
             rgb_matrix_enable_noeeprom();
-            rgb_matrix_mode_noeeprom(rec_rgb_matrix_last_mode);
+            //rgb_matrix_mode_noeeprom(rec_rgb_matrix_last_mode);
             break;
         case _REC:
             rec_rgb_matrix_last_mode = rgb_matrix_get_mode();

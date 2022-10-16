@@ -1,6 +1,5 @@
 # project specific files
 SRC += config_led.c
-SRC += bootmagic_lite.c
 SRC += command_extra.c
 SRC += openrgb_eeprom.c
 
