@@ -626,7 +626,9 @@ endif
 
 ifeq ($(strip $(OPENRGB_ENABLE)), yes)
      ifeq ($(strip $(VIA_ENABLE)), yes)
-        $(error OPENRGB_ENABLE and VIA_ENABLE cannot currently be enabled simultaneously)
+	ifneq ($(strip $(VIA_OPENRGB_HYBRID)), yes)
+            $(error OPENRGB_ENABLE and VIA_ENABLE cannot currently be enabled simultaneously)
+        endif
     endif
     RAW_ENABLE := yes
     SRC += $(QUANTUM_DIR)/openrgb.c

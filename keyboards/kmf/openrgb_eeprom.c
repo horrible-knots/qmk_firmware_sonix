@@ -1,4 +1,5 @@
 #ifdef OPENRGB_ENABLE
+
 #include <stdlib.h>
 #include <string.h>
 #include "openrgb_eeprom.h"

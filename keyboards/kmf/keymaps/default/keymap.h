@@ -17,7 +17,8 @@ enum my_keycodes {
     REC_STOP,
     REC_ADV,
     REC_RET,
-    REC_CLR
+    REC_CLR,
+    ORGB_TOG
 };
 
 #endif

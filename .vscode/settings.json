@@ -27,5 +27,6 @@
     "python.formatting.provider": "yapf",
     "[json]": {
 	    "editor.formatOnSave": false
-    }
+    },
+    "compileCommands": "/home/andy/src/qmk_firmware_sonix/compile_commands.json",
 }

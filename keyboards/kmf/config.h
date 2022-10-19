@@ -37,6 +37,7 @@
 
 #define DIODE_DIRECTION ROW2COL
 #define QMK_KEYS_PER_SCAN 10
+#define DEBUG_MATRIX_SCAN_RATE 0
 
 #undef MATRIX_COL_PINS
 #undef MATRIX_ROW_PINS
@@ -45,8 +46,8 @@
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
 #define DEBOUNCE  5
-#define MATRIX_KEY_SAMPLE_DELAY 5
-#define GPIO_INPUT_PIN_DELAY 5
+#define MATRIX_KEY_SAMPLE_DELAY 1
+#define GPIO_INPUT_PIN_DELAY 1
 #define USB_POLLING_INTERVAL_MS 1
 
 /* Enable NKRO - Up to 248 keys at the same time. */
@@ -56,7 +57,6 @@
 //#define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
 //#define LOCKING_RESYNC_ENABLE
-
 #define LED_NUM_LOCK_PIN    B13
 #define LED_CAPS_LOCK_PIN   B14
 #define LED_SCROLL_LOCK_PIN B15
@@ -98,7 +98,11 @@
 
 /* RGB Reactive Effects Toggle */
 //#define RGB_MATRIX_FRAMEBUFFER_EFFECTS
+<<<<<<< Updated upstream
 #define RGB_MATRIX_KEYREACTIVE_ENABLED
+=======
+//#define RGB_MATRIX_KEYREACTIVE_ENABLED
+>>>>>>> Stashed changes
 //#define RGB_MATRIX_KEYPRESSES
 //#define RGB_MATRIX_KEYRELEASES
 #define LED_HITS_TO_REMEMBER 16
@@ -118,7 +122,7 @@
 //#define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
 // Custom Animations
-#define ENABLE_RGB_MATRIX_CUSTOM_SINGLE_PRESS_FADE
+//#define ENABLE_RGB_MATRIX_CUSTOM_SINGLE_PRESS_FADE
 
 /* Set RGB sleep mode */
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true

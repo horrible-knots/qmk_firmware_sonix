@@ -151,7 +151,15 @@ void matrix_scan_perf_task(void) {
     uint32_t timer_now = timer_read32();
     if (TIMER_DIFF_32(timer_now, matrix_timer) >= 1000) {
 #    if defined(CONSOLE_ENABLE)
+<<<<<<< Updated upstream
         dprintf("matrix scan time: %luus\n", 1000000/matrix_scan_count);
+=======
+<<<<<<< Updated upstream
+        dprintf("matrix scan frequency: %lu\n", matrix_scan_count);
+=======
+        dprintf("matrix scan time: %luus, rate: %lu\n", 1000000/matrix_scan_count, matrix_scan_count);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 #    endif
         last_matrix_scan_count = matrix_scan_count;
         matrix_timer           = timer_now;
