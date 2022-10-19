@@ -209,7 +209,7 @@ static void wear_leveling_clear_cache(void) {
  * Reads the consolidated data from the backing store into the cache.
  * Does not consider the write log.
  */
-static wear_leveling_status_t wear_leveling_read_consolidated(void) {
+const static wear_leveling_status_t wear_leveling_read_consolidated(void) {
     wl_dprintf("Reading consolidated data\n");
 
     wear_leveling_status_t status = WEAR_LEVELING_SUCCESS;
@@ -253,7 +253,7 @@ static wear_leveling_status_t wear_leveling_read_consolidated(void) {
  * Does not clear the write log.
  * Pre-condition: this is just after an erase, so we can write directly without reading.
  */
-static wear_leveling_status_t wear_leveling_write_consolidated(void) {
+const static wear_leveling_status_t wear_leveling_write_consolidated(void) {
     wl_dprintf("Writing consolidated data\n");
 
     backing_store_lock_status_t lock_status = wear_leveling_unlock();

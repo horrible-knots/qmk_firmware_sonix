@@ -23,3 +23,12 @@
 /*D08*/{K40,   NC,  K42,   K43,   K44,   K45,   K46,   K47,   K48,   K49,   K4A,   K4B,    NC,   K4D,   NC,   K4F,    NC,   K4H,   K4I,   K4J,   K4K  },\
 /*D07*/{K50,  K51,  K52,    NC,    NC,    NC,   K56,    NC,    NC,    NC,   K5A,   K5B,   K5C,   K5D,  K5E,   K5F,   K5G,    NC,   K5I,   K5J,    NC  } \
 }
+
+#ifdef VIA_OPENRGB_HYBRID
+enum {
+        _HID_VIA,
+        _HID_ORGB,
+        _HID_RAW
+} hybrid_hid_modes;
+uint8_t hybrid_hid_mode;
+#endif

@@ -628,6 +628,8 @@ ifeq ($(strip $(OPENRGB_ENABLE)), yes)
      ifeq ($(strip $(VIA_ENABLE)), yes)
 	ifneq ($(strip $(VIA_OPENRGB_HYBRID)), yes)
             $(error OPENRGB_ENABLE and VIA_ENABLE cannot currently be enabled simultaneously)
+        else
+	    OPT_DEFS += -DVIA_OPENRGB_HYBRID
         endif
     endif
     RAW_ENABLE := yes

@@ -20,37 +20,13 @@ int gamer_mode_led_state = !LED_PIN_ON_STATE;
 
 void gamer_mode_state_to_eeprom(int state);
 #ifdef VIA_OPENRGB_HYBRID
-uint8_t is_orgb_mode = 0;
+uint8_t hybrid_hid_mode = _HID_ORGB;
 #endif
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CONSOLE_ENABLE
 //       dprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", 
  //          keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
 #endif
-
-    switch (get_highest_layer(layer_state)) {
-	static uint16_t realcode;
-	static bool shift_registered;
-	case _SHIFT:
-	    realcode = keymap_key_to_keycode(_SHIFT, record->event.key);
-	    if (record->event.pressed) {
-		if (realcode == KC_TRNS) {
-		    shift_registered = true;
-		    add_mods(MOD_MASK_SHIFT);
-		    register_code(keycode);
-		    return false;
-		} 
-	    } else {
-		if (realcode == KC_TRNS && shift_registered) {
-		    shift_registered = false;
-		    unregister_code(keycode);
-		    del_mods(MOD_MASK_SHIFT);
-		    return true;
-		}
-	    }
-            break;
-    }
-
     switch (keycode) {
         case GAMER_MODE:
             // Don't handle the Windows key if Function-Windows has been pressed
@@ -65,11 +41,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return !(gamer_mode_led_state == LED_PIN_ON_STATE);
         case KC_APP:
             return !(gamer_mode_led_state == LED_PIN_ON_STATE);
-        }
 #ifdef VIA_OPENRGB_HYBRID
-        case ORGB_TOG:
-            is_orgb_mode = !is_orgb_mode;
-	    return false;
+        case HID_ORGB:
+	    writePin(LED_GAMER_MODE_PIN, gamer_mode_led_state ^= 1);
+            if (record->event.pressed) {
+                hybrid_hid_mode = _HID_ORGB;
+                return false;
+            }
+	    break;
+        case HID_VIA:
+	    writePin(LED_GAMER_MODE_PIN, gamer_mode_led_state ^= 1);
+            if (record->event.pressed) {
+                hybrid_hid_mode = _HID_VIA;
+                return false;
+            }
+	    break;
+        case HID_RAW:
+	    writePin(LED_GAMER_MODE_PIN, gamer_mode_led_state ^= 1);
+            if (record->event.pressed) {
+                hybrid_hid_mode = _HID_RAW;
+                return false;
+            }
+	    break;
 #endif
     }
     return true;

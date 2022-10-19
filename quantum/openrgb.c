@@ -28,6 +28,11 @@
 #include "eeconfig.h"
 #include "eeprom.h"
 
+#ifdef VIA_OPENRGB_HYBRID
+extern uint8_t is_orgb_mode;
+extern uint8_t via_raw_hid_receive(uint8_t *data, uint8_t length);
+#endif
+
 #if !defined(OPENRGB_DIRECT_MODE_STARTUP_RED)
 #    define OPENRGB_DIRECT_MODE_STARTUP_RED 0
 #endif
@@ -178,16 +183,11 @@ static const uint8_t openrgb_rgb_matrix_effects_indexes[] = {
 #endif
 };
 static uint8_t raw_hid_buffer[RAW_EPSIZE];
-
-<<<<<<< Updated upstream
-void raw_hid_receive(uint8_t *data, uint8_t length) {
-=======
 #ifdef VIA_OPENRGB_HYBRID
 void orgb_raw_hid_receive(uint8_t *data, uint8_t length) {
 #else
-void raw_hid_receive(uint8_t *data, uint8_t legth) {
+void raw_hid_receive(uint8_t *data, uint8_t length) {
 #endif
->>>>>>> Stashed changes
     switch (*data) {
         case OPENRGB_GET_PROTOCOL_VERSION:
             openrgb_get_protocol_version();
@@ -413,11 +413,7 @@ enum orgbd {
     ORGBD_MAGIC,
 };
 
-<<<<<<< Updated upstream
 // Disable eeprom functionality of OpenRGB
-=======
-// Dasable eeprom functionality of OpenRGB
->>>>>>> Stashed changes
 void eeconfig_init_openrgb_direct(void) {
     char data_array[EECONFIG_OPENRGB_DIRECT_ARRAY_SIZE];
     void *config_ptr  = EECONFIG_OPENRGB_DIRECT_CONFIG;

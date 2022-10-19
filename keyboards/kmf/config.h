@@ -26,17 +26,15 @@
 
 #define MANUFACTURER    "KMF"
 #define PRODUCT         "Onn Mechanical Gaming Keyboard"
-#define DESCRIPTION     "KMF Onn Mechanical Gaming Keyboard"
 
-#define RAW_USAGE_PAGE 0xFF31
-#define RAW_USAGE_ID 0x74
+//#define RAW_USAGE_PAGE 0xFF31
+//#define RAW_USAGE_ID 0x74
 
 /* key matrix size */
 #define MATRIX_ROWS 6
 #define MATRIX_COLS 21
 
 #define DIODE_DIRECTION ROW2COL
-#define QMK_KEYS_PER_SCAN 10
 #define DEBUG_MATRIX_SCAN_RATE 0
 
 #undef MATRIX_COL_PINS
@@ -46,8 +44,8 @@
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
 #define DEBOUNCE  5
-#define MATRIX_KEY_SAMPLE_DELAY 1
-#define GPIO_INPUT_PIN_DELAY 1
+#define MATRIX_KEY_SAMPLE_DELAY 50
+//#define GPIO_INPUT_PIN_DELAY 1
 #define USB_POLLING_INTERVAL_MS 1
 
 /* Enable NKRO - Up to 248 keys at the same time. */
@@ -67,7 +65,7 @@
 //#define ENABLE_RGB_MATRIX_ALPHAS_MODS
 //#define ENABLE_RGB_MATRIX_GRADIENT_UP_DOWN
 //#define ENABLE_RGB_MATRIX_GRADIENT_LEFT_RIGHT
-//#define ENABLE_RGB_MATRIX_BREATHING
+#define ENABLE_RGB_MATRIX_BREATHING
 //#define ENABLE_RGB_MATRIX_BAND_SAT
 //#define ENABLE_RGB_MATRIX_BAND_VAL
 //#define ENABLE_RGB_MATRIX_BAND_PINWHEEL_SAT
@@ -98,12 +96,8 @@
 
 /* RGB Reactive Effects Toggle */
 //#define RGB_MATRIX_FRAMEBUFFER_EFFECTS
-<<<<<<< Updated upstream
 #define RGB_MATRIX_KEYREACTIVE_ENABLED
-=======
-//#define RGB_MATRIX_KEYREACTIVE_ENABLED
->>>>>>> Stashed changes
-//#define RGB_MATRIX_KEYPRESSES
+#define RGB_MATRIX_KEYPRESSES
 //#define RGB_MATRIX_KEYRELEASES
 #define LED_HITS_TO_REMEMBER 16
 
@@ -122,10 +116,10 @@
 //#define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 
 // Custom Animations
-//#define ENABLE_RGB_MATRIX_CUSTOM_SINGLE_PRESS_FADE
+#define ENABLE_RGB_MATRIX_CUSTOM_SINGLE_PRESS_FADE
 
 /* Set RGB sleep mode */
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true
 #define DISABLE_RGB_MATRIX_CYCLE_LEFT_RIGHT
-#define RGB_MATRIX_STARTUP_HUE 0
+#define RGB_MATRIX_STARTUP_HUE 255
 #define OPENRGB_DIRECT_MODE_USE_UNIVERSAL_BRIGHTNESS

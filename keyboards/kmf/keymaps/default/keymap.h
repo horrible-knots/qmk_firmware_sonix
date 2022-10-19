@@ -18,7 +18,9 @@ enum my_keycodes {
     REC_ADV,
     REC_RET,
     REC_CLR,
-    ORGB_TOG
+    HID_ORGB,
+    HID_VIA,
+    HID_RAW
 };
 
 #endif
